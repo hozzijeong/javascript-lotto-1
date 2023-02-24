@@ -10,14 +10,14 @@ export const inputErrorChecker = (validator) => {
 
 export const purchaseLottoErrorHandler = () => {
   const $errorContainer = document.querySelector('.purchase-enter-container');
-  const $trigger = document.querySelector('#purchaseButton');
+  const $trigger = document.querySelector('#purchase-button');
 
   return { $errorContainer, $trigger };
 };
 
 export const printLottoResultErrorHandler = () => {
   const $errorContainer = document.querySelector('.number-container');
-  const $trigger = document.querySelector('#checkResult');
+  const $trigger = document.querySelector('#check-result');
 
   return { $errorContainer, $trigger };
 };

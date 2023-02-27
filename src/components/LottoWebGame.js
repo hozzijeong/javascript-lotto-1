@@ -1,7 +1,4 @@
-import {
-  paintEnterWinningNumber,
-  getWinNumberAndBonusNumber,
-} from '../view/enterWinningNumber';
+import EnterWinningNumbers from './enterWinningNumber';
 import PurchaseAmountInput from './purchaseAmountInput';
 import showErrorMessage from '../view/errorMessage';
 import paintLottoResultBoard from '../view/lottoResult';
@@ -31,6 +28,7 @@ export default function LottoWebGame($app) {
     $root: null,
     step: STEP.INIT,
     purchaseInput: null,
+    winNumber: null,
   };
 
   const init = () => {
@@ -43,8 +41,10 @@ export default function LottoWebGame($app) {
 
   this.play = () => {
     gameSetting();
+    const { $root } = this.state;
+
     this.state.purchaseInput = new PurchaseAmountInput(
-      this.state.$root,
+      $root,
       purchaseAmountHandler
     );
   };
@@ -73,13 +73,15 @@ export default function LottoWebGame($app) {
 
   const paintGameBoard = (purchaseAmount) => {
     const { $root, lottoGame } = this.state;
+
     this.state.step = STEP.ENTER;
 
     lottoGame.purchaseLottos(purchaseAmount);
     const lottos = lottoGame.getLottoNumbers();
 
     paintLottoStatus($root, lottos);
-    paintEnterWinningNumber($root, checkResultHandler);
+    this.state.winNumber = new EnterWinningNumbers($root, checkResultHandler);
+    this.state.winNumber.paintEnterWinningNumber($root);
   };
 
   const paintResultView = ({ winCount, earningRate }) => {
@@ -125,20 +127,20 @@ export default function LottoWebGame($app) {
 
   const checkResultHandler = (e) => {
     e.preventDefault();
-
-    if (this.state.step !== STEP.ENTER) return;
-
-    const { currentTarget } = e;
-
-    const { winningNumbers, bonusNumber } =
-      getWinNumberAndBonusNumber(currentTarget);
+    const {
+      step,
+      winNumber: {
+        state: { winNumbers, bonusNumber },
+      },
+    } = this.state;
+    if (step !== STEP.ENTER) return;
 
     const { state: winState, message: winMessage } = inputErrorChecker(() =>
-      validateWinningNumbers(winningNumbers)
+      validateWinningNumbers(winNumbers)
     );
 
     const { state: bonusState, message: bonusMessage } = inputErrorChecker(() =>
-      validateBonusNumber(bonusNumber, winningNumbers)
+      validateBonusNumber(bonusNumber, winNumbers)
     );
 
     if (bonusState || winState) {
@@ -149,7 +151,7 @@ export default function LottoWebGame($app) {
     }
 
     this.state.step = STEP.RESULT;
-    calculateResult(bonusNumber, winningNumbers);
+    calculateResult(bonusNumber, winNumbers);
   };
 
   init();

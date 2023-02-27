@@ -18,13 +18,14 @@ const bonusNumberMessage = `
 <p class="body">보너스 번호</p>
 `;
 
-export const numberInput = ({ name }) => `
+export const numberInput = ({ name, idx }) => `
   <input
     class="number-input"
     type="number"
     name=${name}
     min="1"
     max="45"
+    data-idx=${idx}
     required
   />`;
 

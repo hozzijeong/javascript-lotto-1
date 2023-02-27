@@ -2,10 +2,7 @@ import {
   paintEnterWinningNumber,
   getWinNumberAndBonusNumber,
 } from '../view/enterWinningNumber';
-import {
-  paintPurchaseAmountInput,
-  getPurchaseAmount,
-} from '../view/purchaseAmountInput';
+import PurchaseAmountInput from './purchaseAmountInput';
 import showErrorMessage from '../view/errorMessage';
 import paintLottoResultBoard from '../view/lottoResult';
 import paintModal, {
@@ -33,6 +30,7 @@ export default function LottoWebGame($app) {
     lottoGame: null,
     $root: null,
     step: STEP.INIT,
+    purchaseInput: null,
   };
 
   const init = () => {
@@ -45,7 +43,10 @@ export default function LottoWebGame($app) {
 
   this.play = () => {
     gameSetting();
-    paintPurchaseAmountInput(this.state.$root, purchaseAmountHandler);
+    this.state.purchaseInput = new PurchaseAmountInput(
+      this.state.$root,
+      purchaseAmountHandler
+    );
   };
 
   const gameSetting = () => {
@@ -103,11 +104,9 @@ export default function LottoWebGame($app) {
 
   const purchaseAmountHandler = (e) => {
     e.preventDefault();
-    const { currentTarget } = e;
+    const { $root, step, purchaseInput } = this.state;
 
-    const { $root, step } = this.state;
-
-    const purchaseAmount = getPurchaseAmount(currentTarget);
+    const purchaseAmount = purchaseInput.state.amount;
 
     const { state, message } = inputErrorChecker(() =>
       validatePurchaseAmount(purchaseAmount)

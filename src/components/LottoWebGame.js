@@ -6,7 +6,7 @@ import paintModal, {
   addCloseModalBackgroundEventListener,
   closeModal,
 } from '../view/modal';
-import paintLottoStatus from '../view/purchaseLottoStatus';
+import LottoStatus from './purchaseLottoStatus';
 import { STEP } from '../data/Constants';
 import LottoGame from '../domain/LottoGame';
 import {
@@ -29,6 +29,7 @@ export default function LottoWebGame($app) {
     step: STEP.INIT,
     purchaseInput: null,
     winNumber: null,
+    lottoStatus: null,
   };
 
   const init = () => {
@@ -79,9 +80,8 @@ export default function LottoWebGame($app) {
     lottoGame.purchaseLottos(purchaseAmount);
     const lottos = lottoGame.getLottoNumbers();
 
-    paintLottoStatus($root, lottos);
+    this.state.lottoStatus = new LottoStatus($root, lottos).init();
     this.state.winNumber = new EnterWinningNumbers($root, checkResultHandler);
-    this.state.winNumber.paintEnterWinningNumber($root);
   };
 
   const paintResultView = ({ winCount, earningRate }) => {

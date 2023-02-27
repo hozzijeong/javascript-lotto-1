@@ -38,7 +38,6 @@ export default function EnterWinningNumber($root, eventHandler) {
       if (name === 'bonus-number') {
         this.state.bonusNumber = Number(value);
       }
-      console.log(this.state);
     });
   };
 
